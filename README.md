@@ -1,3 +1,3 @@
-# express-learning
-Lean to use Express JS
+# nodis-admin
+Redis admin web ui writen by Nodejs
 `npm install & npm start`
