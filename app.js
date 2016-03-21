@@ -4,9 +4,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var async = require('async');
 var routes = require('./routes');
-var clients = require('./routes/clients');
+// var clients = require('./routes/clients');
 
 var app = express();
 
@@ -28,40 +28,45 @@ app.use(require('node-sass-middleware')({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', routes.index);
-app.get('/clients/add', routes.clients.add);
-app.get('/clients/testConnect', routes.clients.testConnect);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
+// app.get('/clients/add', routes.clients.add);
+// app.get('/clients/testConnect', routes.clients.testConnect);
+async.waterfall([
+  function(callback) {
+    routes(app);
+    callback(null);
+  },
+  function() {
+    // catch 404 and forward to error handler
+    app.use(function(req, res, next) {
+      var err = new Error('Not Found');
+      err.status = 404;
+      next(err);
     });
-  });
-}
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
-});
+    // error handlers
 
+    // development error handler
+    // will print stacktrace
+    if (app.get('env') === 'development') {
+      app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+          message: err.message,
+          error: err
+        });
+      });
+    }
+
+    // production error handler
+    // no stacktraces leaked to user
+    app.use(function(err, req, res, next) {
+      res.status(err.status || 500);
+      res.render('error', {
+        message: err.message,
+        error: {}
+      });
+    });
+  }
+])
 
 module.exports = app;

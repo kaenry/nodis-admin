@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+  div(class='container mt30')
+    div(class='col-md-8 col-md-offset-2')
+      div(class='panel panel-default')
+        div(class='panel-heading')
+          h3(class='panel-title') Redis Server 列表
+        div(class='panel-body')
+          table(id='table')
+  
+  script.
+    $(function(){
+      $('#table').bootstrapTable({
+        url: '/clients/getClients',
+        columns: [
+          {
+            field: 'uuid',
+            title: 'ID',
+            width: '10%',
+            visible: false
+          },
+          {
+            field: 'host',
+            title: 'Host'
+          },
+          {
+            field: 'port',
+            title: 'Port'
+          }
+        ],
+        pagination: true
+      });
+    })

@@ -7,22 +7,22 @@ block content
         div(class='panel-heading')
           h3(class='panel-title') 添加Redis Server
         div(class='panel-body')
-          form(class='form-horizontal')
+          form(class='form-horizontal', method='post', id='form', action='/clients/create')
             div(class='form-group')
               lable(class='col-md-2 control-lable', for='host') Host
               div(class='col-md-8')
-                input(type='text', class='form-control', id='host', placeholder='Host, 127.0.0.1')
+                input(type='text', class='form-control', id='host', name='host', placeholder='Host, 127.0.0.1' required)
             div(class='form-group')
               lable(class='col-md-2 control-lable', for='port') Port
               div(class='col-md-8')
-                input(type='number', class='form-control', id='host', placeholder='Port, 6379')
+                input(type='number', class='form-control', id='port', name='port', placeholder='Port, 6379' required)
             div(class='form-group')
               div(class='col-md-8 col-md-offset-2')
                 button(type='submit', class='btn btn-success') 添加
                 button(type='button', class='btn btn-info pull-right', onclick='testConnect()') Test
   script.
     $(function(){
-      console.log('$');
+      $('#form').validator();
     });
     
     function testConnect() {
