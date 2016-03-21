@@ -1,17 +1,36 @@
 extends ../layout
 
 block content
-  div(class='container mt')
+  div(class='container mt30')
     div(class='col-md-6 col-md-offset-3')
-      form(class='form-horizontal')
-        div(class='form-group')
-          lable(class='col-md-2 control-lable', for='host') Host
-          div(class='col-md-8')
-            input(type='text', class='form-control', id='host', placeholder='Host')
-        div(class='form-group')
-          lable(class='col-md-2 control-lable', for='port') Port
-          div(class='col-md-8')
-            input(type='number', class='form-control', id='host', placeholder='port')
-        div(class='form-group')
-          div(class='col-md-8 col-md-offset-2')
-            button(type='submit', class='btn btn-primary') 添加
+      div(class='panel panel-default')
+        div(class='panel-heading')
+          h3(class='panel-title') 添加Redis Server
+        div(class='panel-body')
+          form(class='form-horizontal')
+            div(class='form-group')
+              lable(class='col-md-2 control-lable', for='host') Host
+              div(class='col-md-8')
+                input(type='text', class='form-control', id='host', placeholder='Host, 127.0.0.1')
+            div(class='form-group')
+              lable(class='col-md-2 control-lable', for='port') Port
+              div(class='col-md-8')
+                input(type='number', class='form-control', id='host', placeholder='Port, 6379')
+            div(class='form-group')
+              div(class='col-md-8 col-md-offset-2')
+                button(type='submit', class='btn btn-success') 添加
+                button(type='button', class='btn btn-info pull-right', onclick='testConnect()') Test
+  script.
+    $(function(){
+      console.log('$');
+    });
+    
+    function testConnect() {
+      $.ajax({
+        url: '/clients/testConnect',
+        dataType: 'json',
+        success: function (data) {
+          console.log(data);
+        }
+      })
+    }
