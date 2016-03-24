@@ -13,12 +13,37 @@ module.exports = {
     app.post('/clients/create', this.create);
     app.get('/clients/testConnect', this.testConnect);
     app.get('/clients/getClients', this.getClients);
+    app.post('/clients/delete', this.del);
+  },
+
+  del: function(req, res) {
+    var id = req.body.id;
+    console.log(id)
+
+    var content = JSON.parse(fs.readFileSync(CLIENTS_PATH));
+    for (var i in content) {
+      var c = content[i];
+      if (c.uuid === id) {
+        content.splice(i, 1);
+
+        fs.writeFileSync(CLIENTS_PATH, JSON.stringify(content), 'utf8');
+
+        return res.send({
+          res: true,
+          msg: '成功'
+        })
+      }
+    }
+    return res.send({
+      res: false,
+      msg: '失败，没有此记录'
+    })
   },
 
   getClients: function(req, res) {
     fs.readFile(CLIENTS_PATH, 'utf8', function(err, data) {
       if (err) {
-        // fs.writeFileSync(CLIENTS_PATH, JSON.stringify([]), 'utf8');
+        fs.writeFileSync(CLIENTS_PATH, JSON.stringify([]), 'utf8');
 
         res.send([]);
       }
@@ -42,8 +67,8 @@ module.exports = {
 
   create: function(req, res, next) {
 
-    var host = req.param('host');
-    var port = req.param('port');
+    var host = req.body.host;
+    var port = req.body.port;
     if (!host || !port) {
       return res.send({
         status: 'error host or port'
@@ -58,6 +83,7 @@ module.exports = {
     };
     content.push(newClient);
     fs.writeFileSync(CLIENTS_PATH, JSON.stringify(content));
+    // post的请求跳转到get，目前有问题，页面会阻塞
     res.redirect('/clients/list');
   },
 

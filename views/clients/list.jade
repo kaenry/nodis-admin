@@ -11,6 +11,34 @@ block content
   
   script.
     $(function(){
+      window.operateEvents = {
+          'click .update': function (e, value, row, index) {
+            location.href='/clients/update?id=' + row.id;
+          },
+          'click .delete': function (e, value, row, index) {
+              showConfirmMessage('确认要删除吗？', '删除', 'small', function (res) {
+                  if (res) {
+                      $.ajax({
+                          url: '/clients/delete',
+                          type: 'post',
+                          dataType: 'json',
+                          data: $.param({
+                              id: row.uuid
+                          }),
+                          success: function (data) {
+                              if (data.res) {
+                                  $('#table').bootstrapTable('remove', {field: 'uuid', values: [row.uuid]});
+                              } else {
+                                  showModalMessage(data.msg || 'null', '删除', 'small');
+                              }
+                              
+                          }
+                      });
+                  }
+              });
+
+          }
+      };
       $('#table').bootstrapTable({
         url: '/clients/getClients',
         columns: [
@@ -27,6 +55,18 @@ block content
           {
             field: 'port',
             title: 'Port'
+          },
+          {
+            title: '操作',
+            events: operateEvents,
+            formatter: function () {
+                return '<a class="update btn btn-info" href="javascript:void(0)" title="修改">'+
+                '修改'+
+                '</a> '+
+                '<a class="delete btn btn-danger" href="javascript:void(0)" title="删除">'+
+                '删除'+
+                '</a> ';
+            }
           }
         ],
         pagination: true
